@@ -48,7 +48,7 @@ Client → Spring Security (JWT Filter) → Controllers → Services → Reposit
 
 **Why optimistic locking over pessimistic locking?**
 
-Pessimistic locking (`SELECT FOR UPDATE`) holds a database lock for the duration of a transaction, which kills throughput under high concurrency. Optimistic locking uses a `version` column — reads are free, and conflicts are detected only at write time. For an e-commerce platform where reads vastly outnumber purchases, optimistic locking is the correct choice.
+Pessimistic locking (`SELECT FOR UPDATE`) holds a database lock for the duration of a transaction, which kills throughput under high concurrency. Optimistic locking uses a `version` column - reads are free, and conflicts are detected only at write time. For an e-commerce platform where reads vastly outnumber purchases, optimistic locking is the correct choice.
 
 **Why JWT over session-based auth?**
 
@@ -124,7 +124,7 @@ To see the concurrency protection in action:
 1. Create a product with `stockQuantity: 1`
 2. Add it to your cart with `quantity: 1`
 3. Place the order - succeeds, stock becomes 0
-4. Try to place another order for the same item — returns `409 Conflict: Not enough stock`
+4. Try to place another order for the same item - returns `409 Conflict: Not enough stock`
 
 Under real concurrent load, JPA's `@Version` column ensures that even if two transactions read `version = 5` simultaneously, only the first write succeeds. The second transaction finds `version` has changed and throws `OptimisticLockException`, which is caught and returned as a clean error response.
 
