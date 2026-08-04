@@ -3,14 +3,14 @@ spring:
     name: catalog
 
   datasource:
-    url: jdbc:postgresql://172.19.221.131:5432/catalogdb
+    url: jdbc:postgresql://172.29.166.150:5432/catalogdb
     username: cataloguser
     password: catalogpass
     driver-class-name: org.postgresql.Driver
 
   data:
     redis:
-      host: 172.19.221.131
+      host: 172.29.166.150
       port: 6379
 
   jpa:
@@ -28,3 +28,8 @@ jwt:
 
 server:
   port: 8080
+
+aws:
+  region: us-east-1
+  sqs:
+    queue-url: https://sqs.us-east-1.amazonaws.com/227769752968/order-notifications

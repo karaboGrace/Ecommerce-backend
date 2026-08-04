@@ -20,6 +20,7 @@ public class OrderService {
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final SqsService sqsService;
 
     // @Transactional means ALL of this runs as one atomic operation.
     // If anything fails halfway through, the entire thing rolls back.
@@ -76,10 +77,16 @@ public class OrderService {
         order.setTotalAmount(total);
         Order savedOrder = orderRepository.save(order);
 
-        // Clear the cart after successful order
+// Clear the cart after successful order
         cartItemRepository.deleteByUser(user);
 
-        return OrderResponse.from(savedOrder);
+        OrderResponse orderResponse = OrderResponse.from(savedOrder);
+
+// Publish to SQS asynchronously — order is already saved,
+// notification failure should never affect the order result
+        sqsService.sendOrderNotification(orderResponse, email);
+
+        return orderResponse;
     }
 
     public List<OrderResponse> getMyOrders(String email) {
