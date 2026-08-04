@@ -133,4 +133,4 @@ Under real concurrent load, JPA's `@Version` column ensures that even if two tra
 - [x] Phase 1 - REST API + JWT authentication
 - [x] Phase 2 - Cart, orders, atomic transactions
 - [x] Phase 3 - Redis caching with cache-aside pattern
-- [ ] Phase 4 - Async order notifications via AWS SQS + Lambda
+- [x] Phase 4 - Async order notifications via AWS SQS + Lambda
