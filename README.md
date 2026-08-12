@@ -30,7 +30,7 @@ Client → Spring Security (JWT Filter) → Controllers → Services → Reposit
 - Stateless JWT authentication - tokens signed with HS256
 - Custom Spring Security filter chain - `JwtAuthFilter` validates every request before it reaches a controller
 - DTO boundary - entities never leak into API responses
-- Input validation on all endpoints using Jakarta Bean Validation — 
+- Input validation on all endpoints using Jakarta Bean Validation - 
   malformed requests are rejected at the controller layer with field-level 
   error messages before touching the database
 
@@ -39,6 +39,11 @@ Client → Spring Security (JWT Filter) → Controllers → Services → Reposit
 - Atomic order placement using `@Transactional` - stock decrement and order creation happen as one indivisible operation
 - **Overselling prevention** using JPA optimistic locking (`@Version`) - if two concurrent requests try to buy the last item, only one succeeds; the other receives a `409 Conflict` with a clear error message
 - Price snapshot at time of purchase - order history is accurate even if product prices change later
+- **Idempotency protection** - clients send an `Idempotency-Key` header with order requests; 
+  duplicate requests within 24 hours return the original response without creating a second 
+  order or decrementing stock twice. Implemented using Redis with 24-hour TTL.
+- **Argon2id password hashing** - replaced BCrypt with Argon2id (winner of the Password 
+  Hashing Competition), configurable memory cost, parallelism, and iterations.
 
 ### Phase 3 - Caching
 - Cache-aside pattern using Redis and Spring's `@Cacheable` / `@CacheEvict`
