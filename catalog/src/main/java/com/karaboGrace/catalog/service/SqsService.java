@@ -24,10 +24,10 @@ public class SqsService {
         try {
             String messageBody = objectMapper.writeValueAsString(
                     new OrderNotificationMessage(
-                            order.id(),
+                            order.getId(),
                             userEmail,
-                            order.totalAmount().toString(),
-                            order.status()
+                            order.getTotalAmount().toString(),
+                            order.getStatus()
                     )
             );
 
@@ -39,14 +39,13 @@ public class SqsService {
 
             sqsClient.sendMessage(request);
             log.info("Order notification sent to SQS for order {} user {}",
-                    order.id(), userEmail);
-
+                    order.getId(), userEmail);
         } catch (Exception e) {
             // We log but don't fail the order — notification is best-effort
             // This is the key design decision: the order succeeds even if
             // the notification fails. Never let email block a purchase.
             log.error("Failed to send SQS notification for order {}: {}",
-                    order.id(), e.getMessage());
+                    order.getId(), e.getMessage());
         }
     }
 

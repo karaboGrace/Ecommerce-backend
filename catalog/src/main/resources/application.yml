@@ -3,14 +3,14 @@ spring:
     name: catalog
 
   datasource:
-    url: jdbc:postgresql://172.29.166.150:5432/catalogdb
+    url: jdbc:postgresql://172.26.207.240:5432/catalogdb
     username: cataloguser
     password: catalogpass
     driver-class-name: org.postgresql.Driver
 
   data:
     redis:
-      host: 172.29.166.150
+      host: 172.26.207.240
       port: 6379
 
   jpa:

@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -60,6 +61,12 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new Argon2PasswordEncoder(
+                16,   // salt length
+                32,   // hash length
+                1,    // parallelism
+                65536, // memory in KB (64MB)
+                3     // iterations
+        );
     }
 }
