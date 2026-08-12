@@ -20,7 +20,7 @@ Client → Spring Security (JWT Filter) → Controllers → Services → Reposit
 | Cache | Redis (AWS ElastiCache-ready) | In-memory cache for high-read endpoints |
 | Auth | JWT (JJWT 0.12) | Stateless authentication - scales horizontally |
 | ORM | Spring Data JPA / Hibernate | Object-relational mapping with optimistic locking |
-| Security | Spring Security 6 | Filter chain, BCrypt password hashing |Argon2id password hashing 
+| Security | Spring Security 6 | Filter chain, Argon2id password hashing  |
 
 ## Features
 
