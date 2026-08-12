@@ -30,6 +30,9 @@ Client → Spring Security (JWT Filter) → Controllers → Services → Reposit
 - Stateless JWT authentication - tokens signed with HS256
 - Custom Spring Security filter chain - `JwtAuthFilter` validates every request before it reaches a controller
 - DTO boundary - entities never leak into API responses
+- Input validation on all endpoints using Jakarta Bean Validation — 
+  malformed requests are rejected at the controller layer with field-level 
+  error messages before touching the database
 
 ### Phase 2 - Cart, Orders, and Concurrency
 - Shopping cart with per-user item management
@@ -57,6 +60,24 @@ Session-based auth requires server-side state - every server in a cluster needs 
 **Why cache the product catalog specifically?**
 
 Product data changes infrequently but is read on every page load. Without caching, a traffic spike hits the database with thousands of identical queries per second. Redis serves repeated reads from memory - orders of magnitude faster - while `@CacheEvict` ensures data is never stale after a write.
+
+**Why Argon2id over BCrypt?**
+
+Argon2id won the Password Hashing Competition in 2015 and is the current 
+OWASP recommendation. Unlike BCrypt which is CPU-bound only, Argon2id is 
+both memory-hard and CPU-hard, making it significantly more resistant to 
+GPU and ASIC brute-force attacks. The memory cost parameter (64MB) means 
+an attacker needs substantial RAM per attempt, not just raw compute speed.
+
+**Why idempotency keys on orders?**
+
+Network failures during checkout are common — a user's request succeeds 
+server-side but the response never reaches the client. Without idempotency, 
+retrying creates duplicate orders and double-charges. The client sends a 
+unique Idempotency-Key header; the server stores the response in Redis for 
+24 hours and returns it on duplicate requests without re-executing the 
+business logic. This is how Amazon's own payment systems handle retries 
+at scale.
 
 ## API Endpoints
 
@@ -133,4 +154,4 @@ Under real concurrent load, JPA's `@Version` column ensures that even if two tra
 - [x] Phase 1 - REST API + JWT authentication
 - [x] Phase 2 - Cart, orders, atomic transactions
 - [x] Phase 3 - Redis caching with cache-aside pattern
-- [ ] Phase 4 - Async order notifications via AWS SQS + Lambda
+- [x] Phase 4 - Async order notifications via AWS SQS + Lambda
